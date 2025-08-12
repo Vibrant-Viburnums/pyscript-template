@@ -1,0 +1,8 @@
+name = "Test"
+
+packages = []
+# interpreter = "0.23.4"
+
+[files]
+# Commented, as the template expands with additional newline.
+# ${files_entry}

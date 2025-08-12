@@ -1,0 +1,13 @@
+[project]
+src = "src/"
+config = "config/"
+main = "main.py"
+
+[runtime]
+pyscript = "2025.8.1"
+script_type = "py"
+# Disabling this will install pyscript + pyoide locally. - NOT IMPLEMENTED YET
+remote_cdn = true
+
+[build]
+out = "build.zip"

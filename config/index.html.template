@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <link rel="stylesheet" href="${cdn}/core.css">
+      <script type="module" src="${cdn}/core.js"></script>
+      <script type="module">
+        let modal = document.getElementById("pyscript-loading");
+        modal.show();
+        addEventListener('py:ready', () => modal.close());
+      </script>
+  </head>
+  <body>
+    <dialog id="pyscript-loading">
+      Loading runtime...
+    </dialog>
+    <button py-click="neat_button">Test button</button>
+    <section class="pyscript">
+      <script type="${script_type}" src="./${main_script}" config="./${pyscript_config}"></script>
+    </section>
+  </body>
+</html>
