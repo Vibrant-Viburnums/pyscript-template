@@ -43,7 +43,7 @@ class ZipBuilder:
         if file in self.texts:
             del self.texts[file]
 
-        with open(file, "r") as buff:
+        with open(file, "r", encoding="utf-8") as buff:
             self.files[Path(dest)] = _FileField(buff.read(), file)
     
     def add_text(self, text: str, dest: Path | str):
@@ -173,15 +173,15 @@ class Project:
     def _parse_pyscript_cfg(self):
         if self.toml_cfg.exists() and self.toml_cfg.is_file():
             self.pyscript_config = "pyscript.toml"
-            return Template(self.toml_cfg.read_text()).substitute(self._gen_cfg_replace(True))
+            return Template(self.toml_cfg.read_text("utf-8")).substitute(self._gen_cfg_replace(True))
         elif self.json_cfg.exists() and self.json_cfg.is_file():
             self.pyscript_config = "pyscipt.json"
-            return Template(self.json_cfg.read_text()).substitute(self._gen_cfg_replace(False))
+            return Template(self.json_cfg.read_text("utf-8")).substitute(self._gen_cfg_replace(False))
 
         raise ValueError("non-existant pyscript config")
     
     def _parse_index_html(self):
-        index_template = self.index_template.read_text()
+        index_template = self.index_template.read_text("utf-8")
         return Template(index_template).substitute(
             {
                 "cdn": CDN.substitute(version=self.config["runtime"]["pyscript"]),
@@ -284,8 +284,8 @@ class ProjectServerHandler(BaseHTTPRequestHandler):
     
     def guess_mimetype(self, path: str):
         guess, _ = mimetypes.guess_file_type(path)
-        if guess: return guess
-        return 'application/octet-stream'
+        if guess: return f"{guess};charset=utf-8"
+        return f"application/octet-stream;charset=utf-8"
 
     def _do_get(self, send_content: bool):
         path = self.parse_path(self.path)
