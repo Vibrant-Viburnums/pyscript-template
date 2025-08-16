@@ -130,9 +130,12 @@ class Project:
     def _handle_unknwon(self, path: Path | str):
         path = Path(path)
         if path == self.toml_cfg or path == self.json_cfg:
-            self.zip.add_text(self._parse_pyscript_cfg(), self.pyscript_config)
+            self.reload_pyscript_cfg()
         elif path == self.index_template:
             self.zip.add_text(self._parse_index_html(), INDEX_LOC)
+    
+    def reload_pyscript_cfg(self):
+        self.zip.add_text(self._parse_pyscript_cfg(), self.pyscript_config)
     
     def add_file(self, path: Path | str):
         dest_path = self.convert_path(path)
@@ -242,6 +245,7 @@ if watchdog is not None:
             super().on_created(event)
             if isinstance(event, fsevents.DirCreatedEvent): return
             self.project.add_file(os.fsdecode(event.src_path))
+            self.project.reload_pyscript_cfg()
         
         def on_modified(self, event: fsevents.DirModifiedEvent | fsevents.FileModifiedEvent) -> None:
             super().on_modified(event)
@@ -283,7 +287,7 @@ class ProjectServerHandler(BaseHTTPRequestHandler):
         return normpath(pth)
     
     def guess_mimetype(self, path: str):
-        guess, _ = mimetypes.guess_file_type(path)
+        guess, _ = mimetypes.guess_type(path, False) # guess_file_type for python 3.13
         if guess: return f"{guess};charset=utf-8"
         return f"application/octet-stream;charset=utf-8"
 
